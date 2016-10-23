@@ -1,0 +1,20 @@
+﻿@using DormAppWeb.Classes;
+@model List<DormApp.Entities.DormType>
+<h4 style="padding-left: .7em">Выберите общежитие</h4>
+<ul class="nav nav-pills">
+    @foreach (var item in Model)
+    {
+        <li style="margin-bottom: 2em;">
+            @Html.RouteLink(
+               item.name,
+               new
+               {
+                   controller = "Info",
+                   action = "Tariffs",
+                   dormId = item.id_building,
+                   page = 1,
+                   tabName = Transliteration.Front(item.id_building)
+               })
+        </li>
+    }
+</ul>

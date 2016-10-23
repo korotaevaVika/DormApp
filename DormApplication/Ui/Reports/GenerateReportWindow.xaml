@@ -1,0 +1,78 @@
+﻿<metro:MetroWindow 
+    
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    x:Class="DormApplication.Ui.Reports.GenerateReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DormApplication"
+        mc:Ignorable="d"
+        Title="Отчеты" 
+        Height="540" Width="700"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+
+        <LinearGradientBrush x:Key="lightGradient" EndPoint="0,0" StartPoint="1,1">
+            <GradientStop Color="Transparent" Offset="0"/>
+            <GradientStop Color="White" Offset="0.3"/>
+            <GradientStop Color="Transparent" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="brightGradient" EndPoint="0,0" StartPoint="1,1">
+            <GradientStop Color="White" Offset="0"/>
+            <GradientStop Color="#FFFFFF3B" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/DormApplication;component/Images/Reports.png" />
+        </Grid.Background>
+        <Button x:Name="btnBackToMenu" Background="White"  BorderBrush="White" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="61" Height="42" Margin="10,10,0,0" Click="btnBackToMenu_Click">
+            <Image Source="../../Images/BackIcon.png" />
+        </Button>
+
+        <ListView x:Name="ListViewReports" Margin="10,104,166,209" BorderThickness="0"
+                  Background="Transparent"
+                  >
+            <ListView.ItemContainerStyle>
+                <Style x:Name="ListItemStyle" TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Background" Value="{StaticResource lightGradient}"/>
+                    <Setter Property="FontFamily" Value="Century Gothic"/>
+                    <Setter Property="Margin" Value="5, 0, 5, 0"/>
+                    <Setter Property="Padding" Value="15, 2, 3, 15"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate x:Name="ControlTemp" TargetType="ListViewItem">
+                                <Border Name="border" 
+                                        BorderThickness="0" 
+                                        Background="{TemplateBinding Background}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter Name="ContPres"
+                                          HorizontalAlignment="Center" 
+                                          VerticalAlignment="Center" 
+                                          />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource brightGradient}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListViewItem x:Name="DebtItem" Selected="ListViewItem_Selected">
+                <TextBlock FontSize="18"><Run Text="Список задолженностей"/></TextBlock>
+            </ListViewItem>
+            <ListViewItem x:Name="PopulationItem" Selected="ListViewItem_Selected">
+                <TextBlock FontSize="18">
+                    <Run Text="Количество проживающих в комнатах по этажам"/></TextBlock>
+            </ListViewItem>
+        </ListView>
+        <Label x:Name="lblHeader" FontFamily="Century Gothic" FontSize="24" Content="Генерация отчетов" HorizontalAlignment="Left" Margin="76,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.671,-0.788" Height="52" Width="571"/>
+    </Grid>
+</metro:MetroWindow>

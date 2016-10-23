@@ -1,0 +1,14 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Главная";
+    ViewBag.Header = "Добро пожаловать!";
+    ViewBag.Paragraph = "Узнай, сколько ты должен заплатить, не выходя из комнаты";
+}
+
+<div class="jumbotron" style="padding-top:0; padding-bottom: 0; margin-bottom:0;  background-color: white">
+    <a href="@Url.Action("Profile", "Login")">
+        <p style="margin-bottom:0;">
+            <img src="~/Images/dormShort.jpg" style="background-size:cover;" class="img-responsive">
+        </p>
+    </a>
+</div>

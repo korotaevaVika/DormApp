@@ -1,0 +1,23 @@
+﻿<metro:MetroWindow x:Class="DormApplication.Ui.Actions.AddDormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DormApplication"
+        mc:Ignorable="d"
+        Title="Добавление корпуса" Height="252" Width="300" 
+                   Background="White"
+        Icon="..\..\Images\BuildingIcon.png"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize" Closing="Window_Closing">
+    <Grid>
+        <Label x:Name="NameLabel" Content="Название" HorizontalAlignment="Left" Margin="27,28,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtDormName" HorizontalAlignment="Left" Height="23" Margin="120,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontStyle="Italic"/>
+        <Label x:Name="AddressLabel" Content="Адрес" HorizontalAlignment="Left" Margin="27,72,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtDormAddress" HorizontalAlignment="Left" Height="23" Margin="120,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontStyle="Italic" UndoLimit="200"/>
+        <Label x:Name="FloorLabel" Content="№ этажей" HorizontalAlignment="Left" Margin="27,118,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtDormFloorNum" HorizontalAlignment="Left" Height="23" Margin="120,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" FontStyle="Italic"/>
+        <Button x:Name="btnNext" Content="Далее" HorizontalAlignment="Left" Margin="165,172,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click"/>
+    </Grid>
+</metro:MetroWindow>

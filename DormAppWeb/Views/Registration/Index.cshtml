@@ -1,0 +1,77 @@
+﻿@model DormApp.Domain.RegistrationData
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Регистрация";
+    ViewBag.Header = "Вход в личный кабинет";
+    ViewBag.Paragraph = "Если вы не зарегистрированы, пройдите регистрацию";
+}
+
+<div class="jumbotron" style="padding-top:0; padding-bottom: 0; margin-bottom:0;  background-color: white">
+
+    @using (Html.BeginForm())
+            {
+        @Html.ValidationSummary()
+        <div class="col-lg-4 col-md-4" style="padding-left: 2em;">
+            <div class="form-group">
+                <p>
+                    Имя
+                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control input-lg" })
+                </p>
+            </div>
+            <div class="form-group">
+                <p>
+                    Фамилия
+                    @Html.TextBoxFor(x => x.Surname, new { @class = "form-control input-lg" })
+                </p>
+            </div>
+
+            <div class="form-group">
+                <p>
+                    Корпус
+                    @Html.DropDownListFor(
+                       x => x.DormitoryName,
+                       new SelectList(ViewBag.DormitoryList),
+                       new { @class = "form-control input-lg" })
+                </p>
+            </div>
+            <div class="form-group">
+                <p>
+                    Комната
+                    @Html.DropDownListFor(
+                       x => x.RoomType,
+                       new SelectList(ViewBag.RoomtypesList),
+                       new { @class = "form-control input-lg" })
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4" style="padding-left: 2em;">
+
+            <div class="form-group">
+                <p>
+                    Номер комнаты
+                    @Html.TextBoxFor(
+                       x => x.RoomNumber,
+                       new { @class = "form-control input-lg" })
+                </p>
+            </div>
+            <div class="form-group">
+                <p>
+                    E-mail
+                    @Html.TextBoxFor(
+                       x => x.EmailAddress,
+                       new { @class = "form-control input-lg" })
+                </p>
+            </div>
+            <div class="form-group">
+                <p>
+                    Пароль
+                    @Html.TextBoxFor(
+                       x => x.Password,
+                       new { @class = "form-control", @type = "password input-lg" })
+                </p>
+            </div>
+            <input type="submit" value="Зарегистрироваться" style="margin-top: 3em" class="btn btn-primary form-control input-lg" />
+        </div>
+    }
+
+</div>

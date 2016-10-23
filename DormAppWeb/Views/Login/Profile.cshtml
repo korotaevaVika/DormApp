@@ -1,0 +1,115 @@
+﻿@model DormAppWeb.Models.ProfileData
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Профиль";
+    ViewBag.Header = "Основная информация";
+}
+
+<div class="jumbotron" style="padding-top:0; padding-bottom: 0; margin-bottom:0;  background-color: white">
+
+    <div class="col-lg-3 col-md-3" style="padding-left: 2em;">
+    </div>
+    <div class="col-lg-6 col-md-6" style="padding-left: 2em;">
+
+        <table class="table table-striped table-bordered table-hover">
+            @*<caption>Информация о вашем счете</caption>*@
+            <thead style="background-color: darkslategrey; color: white;">
+                <tr>
+                    <th>Категория</th>
+                    <th>Значение</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>На счету</td>
+                    <td>@Model.accountData.AccountAmount</td>
+                </tr>
+                <tr>
+                    <td>Месячная оплата</td>
+                    <td>@Model.accountData.PricePerMonth</td>
+                </tr>
+                <tr>
+                    <td>Студент</td>
+                    @{
+                        if (Model.accountData.IsStudent == true)
+                        {
+                            @:
+                            <td>Да</td>
+                        }
+                        else
+                        {
+                            @:
+                            <td>Нет</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    <td>Бюджетная форма обучения</td>
+                    @{
+                        if (Model.accountData.IsBudget == true)
+                        {
+                            @:
+                            <td>Да</td>
+                        }
+                        else
+                        {
+                            @:
+                            <td>Нет</td>
+                        }
+                    }
+                </tr>
+                @{
+                    foreach (System.Reflection.PropertyInfo item in Model.personData.GetType().GetProperties())
+                    {
+                        string name;
+                        ((Dictionary<string, string>)ViewData["PersonDataPropertiesAndNames"]).TryGetValue(item.Name, out name);
+                        string value = "Пусто";
+                        foreach (System.Reflection.PropertyInfo thing in Model.personData.GetType().GetProperties())
+                        {
+                            if (thing.Name == item.Name)
+                            {
+                                if (item.Name == "DormID")
+                                {
+                                    using (var unitOfWork = new DormApp.Domain.UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                                    {
+                                        value = unitOfWork.Dormitories.Get(
+                                            int.Parse(item.GetValue(Model.personData, null).ToString()
+                                            )).name;
+                                        unitOfWork.Dispose();
+                                    }
+                                    break;
+                                }
+                                else if (item.Name == "RoomType")
+                                {
+                                    using (var unitOfWork = new DormApp.Domain.UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                                    {
+                                        value = unitOfWork.RoomTypes.Get(
+                                            int.Parse(item.GetValue(Model.personData, null).ToString()
+                                            )).name;
+                                        unitOfWork.Dispose();
+                                    }
+                                    break;
+                                }
+                                value = item.GetValue(Model.personData, null).ToString();
+                                break;
+                            }
+                        }
+                        @:
+                        <tr>
+                            <td>
+                                @name
+                            </td>
+                            <td>
+                                @value
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+

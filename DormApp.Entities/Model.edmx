@@ -1,0 +1,1038 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Хранилище Dormitory_Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="id_account" />
+          </Key>
+          <Property Name="id_account" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_person" Type="int" Nullable="false" />
+          <Property Name="sum" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Agreement">
+          <Key>
+            <PropertyRef Name="id_agreement" />
+          </Key>
+          <Property Name="id_agreement" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
+          <Property Name="dorm_id" Type="int" Nullable="false" />
+          <Property Name="floor_number" Type="int" Nullable="false" />
+          <Property Name="room_number" Type="int" Nullable="false" />
+          <Property Name="room_id" Type="int" Nullable="false" />
+          <Property Name="date_open" Type="date" Nullable="false" />
+          <Property Name="date_end" Type="date" Nullable="false" />
+          <Property Name="is_active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DormType">
+          <Key>
+            <PropertyRef Name="id_building" />
+          </Key>
+          <Property Name="id_building" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="address" Type="nvarchar(max)" />
+          <Property Name="floor_number" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="History">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="admin_name" Type="nvarchar(max)" />
+          <Property Name="dorm_id" Type="int" Nullable="false" />
+          <Property Name="description" Type="nvarchar(max)" />
+          <Property Name="debitAccountFlag" Type="bit" />
+          <Property Name="insertFlag" Type="bit" />
+          <Property Name="changeRoomFlag" Type="bit" />
+          <Property Name="moveOutFlag" Type="bit" />
+          <Property Name="addPriceFlag" Type="bit" />
+          <Property Name="addPaymentFlag" Type="bit" />
+        </EntityType>
+        <EntityType Name="Mail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="email" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
+          <Property Name="password" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="id_payment" />
+          </Key>
+          <Property Name="id_payment" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
+          <Property Name="date_payment" Type="date" Nullable="false" />
+          <Property Name="sum" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="id_person" />
+          </Key>
+          <Property Name="id_person" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="surname" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="last_name" Type="nvarchar(max)" />
+          <Property Name="is_living" Type="bit" Nullable="false" />
+          <Property Name="passport" Type="bigint" />
+          <Property Name="is_male" Type="bit" Nullable="false" />
+          <Property Name="is_student" Type="bit" Nullable="false" />
+          <Property Name="on_budget" Type="bit" />
+          <Property Name="country_id" Type="int" Nullable="false" />
+          <Property Name="contract" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PriceList">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="room_id" Type="int" Nullable="false" />
+          <Property Name="date_start" Type="date" Nullable="false" />
+          <Property Name="date_end" Type="date" />
+          <Property Name="is_active" Type="bit" Nullable="false" />
+          <Property Name="is_student" Type="bit" Nullable="false" />
+          <Property Name="on_budget" Type="bit" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="dorm_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RoomType">
+          <Key>
+            <PropertyRef Name="id_type" />
+          </Key>
+          <Property Name="id_type" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Account_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Account" Type="Self.Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="id_person" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agreement_DormType">
+          <End Role="DormType" Type="Self.DormType" Multiplicity="1" />
+          <End Role="Agreement" Type="Self.Agreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DormType">
+              <PropertyRef Name="id_building" />
+            </Principal>
+            <Dependent Role="Agreement">
+              <PropertyRef Name="dorm_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agreement_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Agreement" Type="Self.Agreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Agreement">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agreement_RoomType">
+          <End Role="RoomType" Type="Self.RoomType" Multiplicity="1" />
+          <End Role="Agreement" Type="Self.Agreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomType">
+              <PropertyRef Name="id_type" />
+            </Principal>
+            <Dependent Role="Agreement">
+              <PropertyRef Name="room_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_History_DormType">
+          <End Role="DormType" Type="Self.DormType" Multiplicity="1" />
+          <End Role="History" Type="Self.History" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DormType">
+              <PropertyRef Name="id_building" />
+            </Principal>
+            <Dependent Role="History">
+              <PropertyRef Name="dorm_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mail_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Mail" Type="Self.Mail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Mail">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payment_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Payment">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Person_Country">
+          <End Role="Country" Type="Self.Country" Multiplicity="1" />
+          <End Role="Person" Type="Self.Person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Person">
+              <PropertyRef Name="country_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PriceList_DormType">
+          <End Role="DormType" Type="Self.DormType" Multiplicity="1" />
+          <End Role="PriceList" Type="Self.PriceList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DormType">
+              <PropertyRef Name="id_building" />
+            </Principal>
+            <Dependent Role="PriceList">
+              <PropertyRef Name="dorm_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PriceList_RoomType">
+          <End Role="RoomType" Type="Self.RoomType" Multiplicity="1" />
+          <End Role="PriceList" Type="Self.PriceList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomType">
+              <PropertyRef Name="id_type" />
+            </Principal>
+            <Dependent Role="PriceList">
+              <PropertyRef Name="room_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="DeletePerson" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="person_id" Type="int" Mode="In" />
+          <Parameter Name="message" Type="nvarchar(max)" Mode="InOut" />
+        </Function>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="GetActiveAgreementIdByPersonId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="person_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetDebts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+          <Parameter Name="floor" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetIdByName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="surname" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="name" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="GetNotEmptyFloors" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetPeopleCountByRoomNumberDormId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="room_num" Type="int" Mode="In" />
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+          <Parameter Name="room_type" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="GetPersonIdByPassport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="passport" Type="bigint" Mode="In" />
+        </Function>
+        <Function Name="GetPersonListByFloor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="floor" Type="int" Mode="In" />
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetPopulation" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+          <Parameter Name="floor" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetPopulationInWholeDorm" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetPriceByRoomId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="room_id" Type="int" Mode="In" />
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetRoomTypeByPersonId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar(max)">
+          <Parameter Name="person_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetRoomTypes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetRoomTypesByRoomNumberAndDormId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="room_num" Type="int" Mode="In" />
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="InsertPerson" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="surname" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="name" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="lastname" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="passport" Type="bigint" Mode="In" />
+          <Parameter Name="is_male" Type="bit" Mode="In" />
+          <Parameter Name="is_student" Type="bit" Mode="In" />
+          <Parameter Name="on_budget" Type="bit" Mode="In" />
+          <Parameter Name="country_id" Type="int" Mode="In" />
+          <Parameter Name="contract" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+          <Parameter Name="floor_number" Type="int" Mode="In" />
+          <Parameter Name="room_number" Type="int" Mode="In" />
+          <Parameter Name="room_id" Type="int" Mode="In" />
+          <Parameter Name="date_open" Type="date" Mode="In" />
+          <Parameter Name="date_end" Type="date" Mode="In" />
+        </Function>
+        <Function Name="SetRoomPrice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="room_id" Type="int" Mode="In" />
+          <Parameter Name="dorm_id" Type="int" Mode="In" />
+          <Parameter Name="new_price" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="Хранилище Dormitory_ModelContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Agreement" EntityType="Self.Agreement" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DormType" EntityType="Self.DormType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="History" EntityType="Self.History" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mail" EntityType="Self.Mail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payment" EntityType="Self.Payment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Person" EntityType="Self.Person" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PriceList" EntityType="Self.PriceList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoomType" EntityType="Self.RoomType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Account_Person" Association="Self.FK_Account_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Account" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agreement_DormType" Association="Self.FK_Agreement_DormType">
+            <End Role="DormType" EntitySet="DormType" />
+            <End Role="Agreement" EntitySet="Agreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agreement_Person" Association="Self.FK_Agreement_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Agreement" EntitySet="Agreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agreement_RoomType" Association="Self.FK_Agreement_RoomType">
+            <End Role="RoomType" EntitySet="RoomType" />
+            <End Role="Agreement" EntitySet="Agreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_History_DormType" Association="Self.FK_History_DormType">
+            <End Role="DormType" EntitySet="DormType" />
+            <End Role="History" EntitySet="History" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mail_Person" Association="Self.FK_Mail_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Mail" EntitySet="Mail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payment_Person" Association="Self.FK_Payment_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Payment" EntitySet="Payment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Person_Country" Association="Self.FK_Person_Country">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="Person" EntitySet="Person" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PriceList_DormType" Association="Self.FK_PriceList_DormType">
+            <End Role="DormType" EntitySet="DormType" />
+            <End Role="PriceList" EntitySet="PriceList" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PriceList_RoomType" Association="Self.FK_PriceList_RoomType">
+            <End Role="RoomType" EntitySet="RoomType" />
+            <End Role="PriceList" EntitySet="PriceList" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Dormitory_Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="GetRoomTypesByRoomNumberAndDormId_Result">
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="id_account" />
+          </Key>
+          <Property Name="id_account" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_person" Type="Int32" Nullable="false" />
+          <Property Name="sum" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Account_Person" FromRole="Account" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Agreement">
+          <Key>
+            <PropertyRef Name="id_agreement" />
+          </Key>
+          <Property Name="id_agreement" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="person_id" Type="Int32" Nullable="false" />
+          <Property Name="dorm_id" Type="Int32" Nullable="false" />
+          <Property Name="floor_number" Type="Int32" Nullable="false" />
+          <Property Name="room_number" Type="Int32" Nullable="false" />
+          <Property Name="room_id" Type="Int32" Nullable="false" />
+          <Property Name="date_open" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="date_end" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="is_active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="DormType" Relationship="Self.FK_Agreement_DormType" FromRole="Agreement" ToRole="DormType" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Agreement_Person" FromRole="Agreement" ToRole="Person" />
+          <NavigationProperty Name="RoomType" Relationship="Self.FK_Agreement_RoomType" FromRole="Agreement" ToRole="RoomType" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Person_Country" FromRole="Country" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="DormType">
+          <Key>
+            <PropertyRef Name="id_building" />
+          </Key>
+          <Property Name="id_building" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="floor_number" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Agreement" Relationship="Self.FK_Agreement_DormType" FromRole="DormType" ToRole="Agreement" />
+          <NavigationProperty Name="History" Relationship="Self.FK_History_DormType" FromRole="DormType" ToRole="History" />
+          <NavigationProperty Name="PriceList" Relationship="Self.FK_PriceList_DormType" FromRole="DormType" ToRole="PriceList" />
+        </EntityType>
+        <EntityType Name="History">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="admin_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dorm_id" Type="Int32" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="debitAccountFlag" Type="Boolean" />
+          <Property Name="insertFlag" Type="Boolean" />
+          <Property Name="changeRoomFlag" Type="Boolean" />
+          <Property Name="moveOutFlag" Type="Boolean" />
+          <Property Name="addPriceFlag" Type="Boolean" />
+          <Property Name="addPaymentFlag" Type="Boolean" />
+          <NavigationProperty Name="DormType" Relationship="Self.FK_History_DormType" FromRole="History" ToRole="DormType" />
+        </EntityType>
+        <EntityType Name="Mail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="person_id" Type="Int32" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Mail_Person" FromRole="Mail" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="id_payment" />
+          </Key>
+          <Property Name="id_payment" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="person_id" Type="Int32" Nullable="false" />
+          <Property Name="date_payment" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="sum" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Payment_Person" FromRole="Payment" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="id_person" />
+          </Key>
+          <Property Name="id_person" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="surname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="last_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="is_living" Type="Boolean" Nullable="false" />
+          <Property Name="passport" Type="Int64" />
+          <Property Name="is_male" Type="Boolean" Nullable="false" />
+          <Property Name="is_student" Type="Boolean" Nullable="false" />
+          <Property Name="on_budget" Type="Boolean" />
+          <Property Name="country_id" Type="Int32" Nullable="false" />
+          <Property Name="contract" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_Account_Person" FromRole="Person" ToRole="Account" />
+          <NavigationProperty Name="Agreement" Relationship="Self.FK_Agreement_Person" FromRole="Person" ToRole="Agreement" />
+          <NavigationProperty Name="Country" Relationship="Self.FK_Person_Country" FromRole="Person" ToRole="Country" />
+          <NavigationProperty Name="Mail" Relationship="Self.FK_Mail_Person" FromRole="Person" ToRole="Mail" />
+          <NavigationProperty Name="Payment" Relationship="Self.FK_Payment_Person" FromRole="Person" ToRole="Payment" />
+        </EntityType>
+        <EntityType Name="PriceList">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="room_id" Type="Int32" Nullable="false" />
+          <Property Name="date_start" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="date_end" Type="DateTime" Precision="0" />
+          <Property Name="is_active" Type="Boolean" Nullable="false" />
+          <Property Name="is_student" Type="Boolean" Nullable="false" />
+          <Property Name="on_budget" Type="Boolean" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="dorm_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DormType" Relationship="Self.FK_PriceList_DormType" FromRole="PriceList" ToRole="DormType" />
+          <NavigationProperty Name="RoomType" Relationship="Self.FK_PriceList_RoomType" FromRole="PriceList" ToRole="RoomType" />
+        </EntityType>
+        <EntityType Name="RoomType">
+          <Key>
+            <PropertyRef Name="id_type" />
+          </Key>
+          <Property Name="id_type" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Agreement" Relationship="Self.FK_Agreement_RoomType" FromRole="RoomType" ToRole="Agreement" />
+          <NavigationProperty Name="PriceList" Relationship="Self.FK_PriceList_RoomType" FromRole="RoomType" ToRole="PriceList" />
+        </EntityType>
+        <Association Name="FK_Account_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Account" Type="Self.Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="id_person" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agreement_DormType">
+          <End Role="DormType" Type="Self.DormType" Multiplicity="1" />
+          <End Role="Agreement" Type="Self.Agreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DormType">
+              <PropertyRef Name="id_building" />
+            </Principal>
+            <Dependent Role="Agreement">
+              <PropertyRef Name="dorm_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agreement_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Agreement" Type="Self.Agreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Agreement">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agreement_RoomType">
+          <End Role="RoomType" Type="Self.RoomType" Multiplicity="1" />
+          <End Role="Agreement" Type="Self.Agreement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomType">
+              <PropertyRef Name="id_type" />
+            </Principal>
+            <Dependent Role="Agreement">
+              <PropertyRef Name="room_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Person_Country">
+          <End Role="Country" Type="Self.Country" Multiplicity="1" />
+          <End Role="Person" Type="Self.Person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Person">
+              <PropertyRef Name="country_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_History_DormType">
+          <End Role="DormType" Type="Self.DormType" Multiplicity="1" />
+          <End Role="History" Type="Self.History" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DormType">
+              <PropertyRef Name="id_building" />
+            </Principal>
+            <Dependent Role="History">
+              <PropertyRef Name="dorm_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PriceList_DormType">
+          <End Role="DormType" Type="Self.DormType" Multiplicity="1" />
+          <End Role="PriceList" Type="Self.PriceList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DormType">
+              <PropertyRef Name="id_building" />
+            </Principal>
+            <Dependent Role="PriceList">
+              <PropertyRef Name="dorm_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mail_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Mail" Type="Self.Mail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Mail">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payment_Person">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id_person" />
+            </Principal>
+            <Dependent Role="Payment">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PriceList_RoomType">
+          <End Role="RoomType" Type="Self.RoomType" Multiplicity="1" />
+          <End Role="PriceList" Type="Self.PriceList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomType">
+              <PropertyRef Name="id_type" />
+            </Principal>
+            <Dependent Role="PriceList">
+              <PropertyRef Name="room_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Dormitory_Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Account" EntityType="Self.Account" />
+          <EntitySet Name="Agreement" EntityType="Self.Agreement" />
+          <EntitySet Name="Country" EntityType="Self.Country" />
+          <EntitySet Name="DormType" EntityType="Self.DormType" />
+          <EntitySet Name="History" EntityType="Self.History" />
+          <EntitySet Name="Mail" EntityType="Self.Mail" />
+          <EntitySet Name="Payment" EntityType="Self.Payment" />
+          <EntitySet Name="Person" EntityType="Self.Person" />
+          <EntitySet Name="PriceList" EntityType="Self.PriceList" />
+          <EntitySet Name="RoomType" EntityType="Self.RoomType" />
+          <AssociationSet Name="FK_Account_Person" Association="Self.FK_Account_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Account" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agreement_DormType" Association="Self.FK_Agreement_DormType">
+            <End Role="DormType" EntitySet="DormType" />
+            <End Role="Agreement" EntitySet="Agreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agreement_Person" Association="Self.FK_Agreement_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Agreement" EntitySet="Agreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agreement_RoomType" Association="Self.FK_Agreement_RoomType">
+            <End Role="RoomType" EntitySet="RoomType" />
+            <End Role="Agreement" EntitySet="Agreement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Person_Country" Association="Self.FK_Person_Country">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="Person" EntitySet="Person" />
+          </AssociationSet>
+          <AssociationSet Name="FK_History_DormType" Association="Self.FK_History_DormType">
+            <End Role="DormType" EntitySet="DormType" />
+            <End Role="History" EntitySet="History" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PriceList_DormType" Association="Self.FK_PriceList_DormType">
+            <End Role="DormType" EntitySet="DormType" />
+            <End Role="PriceList" EntitySet="PriceList" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mail_Person" Association="Self.FK_Mail_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Mail" EntitySet="Mail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payment_Person" Association="Self.FK_Payment_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Payment" EntitySet="Payment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PriceList_RoomType" Association="Self.FK_PriceList_RoomType">
+            <End Role="RoomType" EntitySet="RoomType" />
+            <End Role="PriceList" EntitySet="PriceList" />
+          </AssociationSet>
+          <FunctionImport Name="GetRoomTypesByRoomNumberAndDormId" IsComposable="true" ReturnType="Collection(Dormitory_Model.GetRoomTypesByRoomNumberAndDormId_Result)">
+            <Parameter Name="room_num" Mode="In" Type="Int32" />
+            <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DeletePerson">
+            <Parameter Name="person_id" Mode="In" Type="Int32" />
+            <Parameter Name="message" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetDebts" ReturnType="Collection(Dormitory_Model.GetDebts_Result)">
+            <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+            <Parameter Name="floor" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetNotEmptyFloors" ReturnType="Collection(Int32)">
+          <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetPersonListByFloor" ReturnType="Collection(Dormitory_Model.GetPersonListByFloor_Result)">
+            <Parameter Name="floor" Mode="In" Type="Int32" />
+            <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetPopulation" ReturnType="Collection(Dormitory_Model.GetPopulation_Result)">
+            <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+            <Parameter Name="floor" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetPopulationInWholeDorm" ReturnType="Collection(Dormitory_Model.GetPopulationInWholeDorm_Result)">
+          <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetRoomTypes" ReturnType="Collection(String)" />
+          <FunctionImport Name="InsertPerson">
+            <Parameter Name="surname" Mode="In" Type="String" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="lastname" Mode="In" Type="String" />
+            <Parameter Name="passport" Mode="In" Type="Int64" />
+            <Parameter Name="is_male" Mode="In" Type="Boolean" />
+            <Parameter Name="is_student" Mode="In" Type="Boolean" />
+            <Parameter Name="on_budget" Mode="In" Type="Boolean" />
+            <Parameter Name="country_id" Mode="In" Type="Int32" />
+            <Parameter Name="contract" Mode="In" Type="String" />
+            <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+            <Parameter Name="floor_number" Mode="In" Type="Int32" />
+            <Parameter Name="room_number" Mode="In" Type="Int32" />
+            <Parameter Name="room_id" Mode="In" Type="Int32" />
+            <Parameter Name="date_open" Mode="In" Type="DateTime" />
+            <Parameter Name="date_end" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="SetRoomPrice">
+            <Parameter Name="room_id" Mode="In" Type="Int32" />
+            <Parameter Name="dorm_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_price" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(Dormitory_Model.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(Dormitory_Model.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+        </EntityContainer>
+        <ComplexType Name="GetDebts_Result">
+          <Property Type="Int32" Name="room_number" Nullable="false" />
+          <Property Type="String" Name="name" Nullable="false" />
+          <Property Type="String" Name="Column1" Nullable="false" />
+          <Property Type="Decimal" Name="sum" Nullable="false" Precision="18" Scale="2" />
+        </ComplexType>
+        <ComplexType Name="GetPersonListByFloor_Result">
+          <Property Type="String" Name="surname" Nullable="false" />
+          <Property Type="String" Name="name" Nullable="false" />
+          <Property Type="Int32" Name="room_number" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetPopulation_Result">
+          <Property Type="Int32" Name="roomNum" Nullable="false" />
+          <Property Type="String" Name="roomName" Nullable="false" />
+          <Property Type="Int32" Name="Quantity" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetPopulationInWholeDorm_Result">
+          <Property Type="Int32" Name="room_number" Nullable="false" />
+          <Property Type="String" Name="name" Nullable="false" />
+          <Property Type="Int32" Name="Column1" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище Dormitory_ModelContainer" CdmEntityContainer="Dormitory_Entities">
+          <EntitySetMapping Name="Account">
+            <EntityTypeMapping TypeName="Dormitory_Model.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="id_account" ColumnName="id_account" />
+                <ScalarProperty Name="id_person" ColumnName="id_person" />
+                <ScalarProperty Name="sum" ColumnName="sum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Agreement">
+            <EntityTypeMapping TypeName="Dormitory_Model.Agreement">
+              <MappingFragment StoreEntitySet="Agreement">
+                <ScalarProperty Name="id_agreement" ColumnName="id_agreement" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="dorm_id" ColumnName="dorm_id" />
+                <ScalarProperty Name="floor_number" ColumnName="floor_number" />
+                <ScalarProperty Name="room_number" ColumnName="room_number" />
+                <ScalarProperty Name="room_id" ColumnName="room_id" />
+                <ScalarProperty Name="date_open" ColumnName="date_open" />
+                <ScalarProperty Name="date_end" ColumnName="date_end" />
+                <ScalarProperty Name="is_active" ColumnName="is_active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Country">
+            <EntityTypeMapping TypeName="Dormitory_Model.Country">
+              <MappingFragment StoreEntitySet="Country">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DormType">
+            <EntityTypeMapping TypeName="Dormitory_Model.DormType">
+              <MappingFragment StoreEntitySet="DormType">
+                <ScalarProperty Name="id_building" ColumnName="id_building" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="floor_number" ColumnName="floor_number" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="History">
+            <EntityTypeMapping TypeName="Dormitory_Model.History">
+              <MappingFragment StoreEntitySet="History">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="admin_name" ColumnName="admin_name" />
+                <ScalarProperty Name="dorm_id" ColumnName="dorm_id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="debitAccountFlag" ColumnName="debitAccountFlag" />
+                <ScalarProperty Name="insertFlag" ColumnName="insertFlag" />
+                <ScalarProperty Name="changeRoomFlag" ColumnName="changeRoomFlag" />
+                <ScalarProperty Name="moveOutFlag" ColumnName="moveOutFlag" />
+                <ScalarProperty Name="addPriceFlag" ColumnName="addPriceFlag" />
+                <ScalarProperty Name="addPaymentFlag" ColumnName="addPaymentFlag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mail">
+            <EntityTypeMapping TypeName="Dormitory_Model.Mail">
+              <MappingFragment StoreEntitySet="Mail">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="password" ColumnName="password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payment">
+            <EntityTypeMapping TypeName="Dormitory_Model.Payment">
+              <MappingFragment StoreEntitySet="Payment">
+                <ScalarProperty Name="id_payment" ColumnName="id_payment" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="date_payment" ColumnName="date_payment" />
+                <ScalarProperty Name="sum" ColumnName="sum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Person">
+            <EntityTypeMapping TypeName="Dormitory_Model.Person">
+              <MappingFragment StoreEntitySet="Person">
+                <ScalarProperty Name="id_person" ColumnName="id_person" />
+                <ScalarProperty Name="surname" ColumnName="surname" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="is_living" ColumnName="is_living" />
+                <ScalarProperty Name="passport" ColumnName="passport" />
+                <ScalarProperty Name="is_male" ColumnName="is_male" />
+                <ScalarProperty Name="is_student" ColumnName="is_student" />
+                <ScalarProperty Name="on_budget" ColumnName="on_budget" />
+                <ScalarProperty Name="country_id" ColumnName="country_id" />
+                <ScalarProperty Name="contract" ColumnName="contract" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PriceList">
+            <EntityTypeMapping TypeName="Dormitory_Model.PriceList">
+              <MappingFragment StoreEntitySet="PriceList">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="room_id" ColumnName="room_id" />
+                <ScalarProperty Name="date_start" ColumnName="date_start" />
+                <ScalarProperty Name="date_end" ColumnName="date_end" />
+                <ScalarProperty Name="is_active" ColumnName="is_active" />
+                <ScalarProperty Name="is_student" ColumnName="is_student" />
+                <ScalarProperty Name="on_budget" ColumnName="on_budget" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="dorm_id" ColumnName="dorm_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoomType">
+            <EntityTypeMapping TypeName="Dormitory_Model.RoomType">
+              <MappingFragment StoreEntitySet="RoomType">
+                <ScalarProperty Name="id_type" ColumnName="id_type" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="Хранилище Dormitory_Model.GetRoomTypesByRoomNumberAndDormId" FunctionImportName="GetRoomTypesByRoomNumberAndDormId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.GetRoomTypesByRoomNumberAndDormId_Result">
+                <ScalarProperty Name="name" ColumnName="name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="DeletePerson" FunctionName="Хранилище Dormitory_Model.DeletePerson" />
+          <FunctionImportMapping FunctionImportName="GetDebts" FunctionName="Хранилище Dormitory_Model.GetDebts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.GetDebts_Result">
+                <ScalarProperty Name="room_number" ColumnName="room_number" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Column1" ColumnName="Column1" />
+                <ScalarProperty Name="sum" ColumnName="sum" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetNotEmptyFloors" FunctionName="Хранилище Dormitory_Model.GetNotEmptyFloors" />
+          <FunctionImportMapping FunctionImportName="GetPersonListByFloor" FunctionName="Хранилище Dormitory_Model.GetPersonListByFloor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.GetPersonListByFloor_Result">
+                <ScalarProperty Name="surname" ColumnName="surname" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="room_number" ColumnName="room_number" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetPopulation" FunctionName="Хранилище Dormitory_Model.GetPopulation">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.GetPopulation_Result">
+                <ScalarProperty Name="roomNum" ColumnName="roomNum" />
+                <ScalarProperty Name="roomName" ColumnName="roomName" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetPopulationInWholeDorm" FunctionName="Хранилище Dormitory_Model.GetPopulationInWholeDorm">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.GetPopulationInWholeDorm_Result">
+                <ScalarProperty Name="room_number" ColumnName="room_number" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Column1" ColumnName="Column1" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetRoomTypes" FunctionName="Хранилище Dormitory_Model.GetRoomTypes" />
+          <FunctionImportMapping FunctionImportName="InsertPerson" FunctionName="Хранилище Dormitory_Model.InsertPerson" />
+          <FunctionImportMapping FunctionImportName="SetRoomPrice" FunctionName="Хранилище Dormitory_Model.SetRoomPrice" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Хранилище Dormitory_Model.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Хранилище Dormitory_Model.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Хранилище Dormitory_Model.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Хранилище Dormitory_Model.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Хранилище Dormitory_Model.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Dormitory_Model.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Хранилище Dormitory_Model.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Хранилище Dormitory_Model.sp_upgraddiagrams" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

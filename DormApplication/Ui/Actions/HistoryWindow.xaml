@@ -1,0 +1,76 @@
+﻿<metro:MetroWindow x:Class="DormApplication.Ui.Actions.HistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:DormApplication.Ui.Actions"
+        mc:Ignorable="d"
+        Title="История действий"
+        Height="540" Width="700"
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" >
+    <Grid>
+        <Button x:Name="btnBackToMenu" Background="White" 
+                BorderBrush="White" Grid.Column="0" HorizontalAlignment="Left" 
+                VerticalAlignment="Top" Width= "61" Height="42" Margin="10,10,0,0" 
+                Click="btnBackToMenu_Click">
+            <Image Source="/Images/BackIcon.png" />
+        </Button>
+        <Label x:Name="lblHeader" FontFamily="Century Gothic" FontSize="24" 
+               Content="История. " HorizontalAlignment="Left" Margin="76,10,0,0" VerticalAlignment="Top" 
+               Height="52" Width="571"/>
+        <DataGrid x:Name="gridHistory" HorizontalAlignment="Left" Margin="0,202,0,0" 
+                  AutoGenerateColumns="False" VerticalAlignment="Top" Width="692" LoadingRow="gridHistoryPayment_LoadingRow">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Администратор" Width="100" 
+                             Binding="{Binding Path=admin_name}" ></DataGridTextColumn>
+                <DataGridTextColumn Header="Описание" Width="180" 
+                             Binding="{Binding Path=description}"></DataGridTextColumn>
+                <DataGridCheckBoxColumn x:Name="insertFlag" Header="Вставка" Width="*" 
+                                        Binding="{Binding Path=insertFlag}" 
+                                        ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                                        EditingElementStyle="{DynamicResource MetroDataGridCheckBox}">
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn x:Name="changeRoomFlag" Header="Переселение" Width="*" 
+                                        Binding="{Binding Path=changeRoomFlag}" 
+                                        ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                                        EditingElementStyle="{DynamicResource MetroDataGridCheckBox}">
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn x:Name="moveOutFlag"  Header="Выселение" Width="*" 
+                                        Binding="{Binding Path=moveOutFlag}" 
+                                        ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                                        EditingElementStyle="{DynamicResource MetroDataGridCheckBox}">
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn x:Name="addPriceFlag"  Header="Тариф" Width="*" 
+                                        Binding="{Binding Path=addPriceFlag}"
+                                        ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                                        EditingElementStyle="{DynamicResource MetroDataGridCheckBox}">
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn x:Name="addPaymentFlag"  Header="Оплата" Width="*" 
+                                        Binding="{Binding Path=addPaymentFlag}"
+                                        ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                                        EditingElementStyle="{DynamicResource MetroDataGridCheckBox}">
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn x:Name="debitAccountFlag"  Header="Снятие" Width="*" 
+                                        Binding="{Binding Path=debitAccountFlag}"
+                                        ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                                        EditingElementStyle="{DynamicResource MetroDataGridCheckBox}">
+                </DataGridCheckBoxColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+        <xctk:ColorPicker x:Name="colorInserted"  Margin="164,67,474,412" SelectedColorChanged="SelectedColorChanged" />
+        <xctk:ColorPicker x:Name="colorChanged" Margin="360,67,278,412"  SelectedColorChanged="SelectedColorChanged"/>
+        <xctk:ColorPicker x:Name="colorMoveOut" Margin="545,67,93,412"  SelectedColorChanged="SelectedColorChanged"/>
+        <xctk:ColorPicker x:Name="colorAddPrice" Margin="164,136,474,343"  SelectedColorChanged="SelectedColorChanged"/>
+        <xctk:ColorPicker x:Name="colorAddPayment" Margin="360,136,278,343" SelectedColorChanged="SelectedColorChanged"/>
+        <xctk:ColorPicker x:Name="colorDebitAccount" Margin="545,136,93,343" SelectedColorChanged="SelectedColorChanged"/>
+        <Label x:Name="lblInserted" Content="Вставка" HorizontalAlignment="Left" Margin="50,67,0,0" VerticalAlignment="Top" Width="109" metro:ControlsHelper.ContentCharacterCasing="Upper" Height="30"/>
+        <Label x:Name="lblTariff" Content="Тарифы" HorizontalAlignment="Left" Margin="50,136,0,0" VerticalAlignment="Top" Width="109" metro:ControlsHelper.ContentCharacterCasing="Upper" Height="30"/>
+        <Label x:Name="lblMoveOut" Content="Выселение" HorizontalAlignment="Left" Margin="431,67,0,0" VerticalAlignment="Top" Width="109" metro:ControlsHelper.ContentCharacterCasing="Upper" Height="30"/>
+        <Label x:Name="lblDebitAccount" Content="Снятие" HorizontalAlignment="Left" Margin="431,136,0,0" VerticalAlignment="Top" Width="109" metro:ControlsHelper.ContentCharacterCasing="Upper" Height="30"/>
+        <Label x:Name="lblChange" Content="Переселение" HorizontalAlignment="Left" Margin="246,67,0,0" VerticalAlignment="Top" Width="109" metro:ControlsHelper.ContentCharacterCasing="Upper" Height="30"/>
+        <Label x:Name="lblPayment" Content="Оплата" HorizontalAlignment="Left" Margin="246,136,0,0" VerticalAlignment="Top" Width="109" metro:ControlsHelper.ContentCharacterCasing="Upper" Height="30"/>
+    </Grid>
+</metro:MetroWindow>

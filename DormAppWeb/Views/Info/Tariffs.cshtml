@@ -1,0 +1,97 @@
+﻿@using DormAppWeb.Models
+@using DormAppWeb.HtmlHelpers
+@model TariffListViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Тарифы";
+    ViewBag.Header = "Стоимость проживания" + ViewBag.DormName;
+}
+@System.Web.Optimization.Styles.Render("~/bundles/pages")
+<style>
+    td:nth-child(2) {
+        text-align: right;
+    }
+</style>
+
+<div class="col-lg-3 col-md-3" style="padding-left: 2em;">
+    @{Html.RenderAction("Menu", "Nav");}
+</div>
+<div class="col-lg-6 col-md-6" style="padding-left: 2em;">
+    @{
+        foreach (var item in Model.Tariffs.ToList())
+        {
+            <table class="table table-bordered" style="margin-bottom: 2em;">
+                <tbody>
+                    <tr class="info">
+                        <td>@item.Title</td>
+                        <td>@item.Price</td>
+                    </tr>
+                    <tr>
+                        <td>Тип комнаты</td>
+                        <td>@item.RoomTypeName</td>
+                    </tr>
+                    <tr>
+                        <td>Студент</td>
+                        <td>
+                            @{
+                                if (item.IsStudent == true)
+                                {
+                                    @:Да
+                                    }
+                                else
+                                {
+                                    @:Нет
+                                    }
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Бюджетная ф/о.</td>
+                        <td>
+                            @{
+                                if (item.OnBudget == true)
+                                {
+                                    @:Да
+                                    }
+                                else
+                                {
+                                    @:Нет
+                                    }
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Действует с</td>
+                        <td>
+                            @item.DateStart.ToShortDateString()
+                        </td>
+                    </tr>
+                    @{
+                        if (item.DateFinish != null)
+                        {
+                            @:
+                            <tr>
+                                <td>до</td>
+                                <td>
+                                    @item.DateFinish.Value.ToShortDateString()
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+                        }
+
+    }
+    <div class="pager">
+        @Html.PageLinks(Model.PageInfo,
+       x => Url.RouteUrl(
+           "TariffRoute",
+           new
+           {
+               tabName = Model.CurrentTranslitDormName,
+               page = x,
+               dormId = Model.CurrentDormId
+           }))
+    </div>
+</div>

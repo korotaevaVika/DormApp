@@ -1,0 +1,30 @@
+﻿@using DormAppWeb.Models
+@using DormAppWeb.HtmlHelpers
+@model DormListViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Корпуса";
+    ViewBag.Header = "Список общежитий";
+}
+
+@System.Web.Optimization.Styles.Render("~/bundles/pages")
+
+<div class="col-lg-4 col-md-4" style="padding-left: 2em;">
+</div>
+<div class="col-lg-4 col-md-4" style="padding-left: 2em;">
+
+    @{
+        foreach (var item in Model.Dormitories.ToList())
+        {
+            Html.RenderPartial("_DormSummary", item);
+        }
+
+    }
+    <div class="pager">
+        @Html.PageLinks(Model.PageInfo, x => Url.Action("Dorms", new
+   {
+       page = x
+   }))
+    </div>
+</div>

@@ -1,0 +1,30 @@
+﻿@using DormAppWeb.Classes;
+@model DormApp.Entities.DormType
+<div class="item">
+
+    <h2 id="header">
+        @Model.name
+    </h2>
+    <div id="item">
+        <p>
+            Адрес:
+            @Model.address
+        </p>
+        <p>
+            @Model.floor_number этажей
+        </p>
+        <p>
+            @Html.ActionLink(
+           "Просмотреть стоимость проживания",
+           "Tariffs",
+           "Info",
+           new
+           {
+               page = 1,
+               dormId = Model.id_building,
+               tabName = Transliteration.Front(Model.id_building)
+           },
+           new { target = "_self" })
+        </p>
+    </div>
+</div>

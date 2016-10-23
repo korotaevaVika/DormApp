@@ -1,0 +1,22 @@
+﻿<metro:MetroWindow x:Class="DormApplication.Ui.Reports.InputValuesForDebtReportWindow"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DormApplication"
+        mc:Ignorable="d"
+        Title="Ввод параметров отчета"
+        Height="235.5" Width="304.5"
+        WindowStartupLocation="CenterScreen" 
+        >
+    <Grid>
+        <Label Content="Общежитие" HorizontalAlignment="Left" Margin="23,40,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblDormName" HorizontalAlignment="Left" Margin="145,40,0,0" VerticalAlignment="Top"/>
+        <Label Content="Выберите этаж" HorizontalAlignment="Left" Margin="23,71,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboFloor" HorizontalAlignment="Left" Margin="145,71,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnGenerate" Content="Просмотреть" Padding="4" HorizontalAlignment="Left" Margin="172,120,0,0" VerticalAlignment="Top" Width="93" Click="btnGenerate_Click"/>
+        <Button x:Name="btnBack" Content="Назад" Padding="4" HorizontalAlignment="Left" Margin="172,151,0,0" VerticalAlignment="Top" Width="93" Click="btnBack_Click"/>
+
+    </Grid>
+</metro:MetroWindow>

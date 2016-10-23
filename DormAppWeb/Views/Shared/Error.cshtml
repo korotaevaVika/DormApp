@@ -1,0 +1,21 @@
+﻿@model DormApp.Domain.RegistrationData
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Ошибка</title>
+    @System.Web.Optimization.Styles.Render("~/Content/css")
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/bootstrap")
+</head>
+<body>
+    @RenderPage("~/Views/Shared/_navigation.cshtml")
+    <div class="text-center">
+        <h2>@ViewBag.Header</h2>
+        <p style="margin-bottom: 2em; ">@ViewBag.Message</p>
+        <hr style="width: 20%;">
+    </div>
+</body>
+</html>

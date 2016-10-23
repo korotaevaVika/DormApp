@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" href="~/Images/icon.png" />
+    @System.Web.Optimization.Styles.Render("~/Content/css")
+    @System.Web.Optimization.Styles.Render("~/bundles/pages")
+    <style>
+        DIV #header {
+            color: #526584;
+        }
+
+        DIV .item {
+            border-top: .2em solid #0e2f63;
+            padding-top: .7em;
+            margin-bottom: .7em;
+        }
+
+            DIV.item:first-child {
+                border-top: none;
+                padding-top: 0;
+            }
+    </style>
+</head>
+<body>
+    @RenderPage("~/Views/Shared/_navigation.cshtml")
+    <!-- Основное содержимое мастер-страницы -->
+    <div class="text-center">
+        <h2>@ViewBag.Header</h2>
+        <hr style="width: 20%;">
+    </div>
+
+    @RenderBody()
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    @System.Web.Optimization.Scripts.Render("~/bundles/bootstrap")
+
+</body>
+</html>
