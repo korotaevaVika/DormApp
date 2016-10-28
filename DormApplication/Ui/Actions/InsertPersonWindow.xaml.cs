@@ -1,18 +1,13 @@
-﻿using DormApp.Domain;
+﻿using DormApp.Domain.Interfaces;
+using DormApp.Domain;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Ninject;
+using System.Diagnostics;
 
 namespace DormApplication.Ui.Actions
 {
@@ -21,7 +16,7 @@ namespace DormApplication.Ui.Actions
     /// </summary>
     public partial class InsertPersonWindow : MetroWindow
     {
-        private List<KeyValuePair<String, String>> _text;
+        private List<KeyValuePair<string, string>> _text;
 
         public InsertPersonWindow()
         {
@@ -30,13 +25,11 @@ namespace DormApplication.Ui.Actions
             dateStart.SelectedDate = DateTime.Today;
             dateFinish.SelectedDate = DateTime.Today;
 
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 comboCountry.ItemsSource = unitOfWork.Countries.GetCountryNames();
                 comboRoomType.ItemsSource = unitOfWork.RoomTypes.GetRoomTypeNames();
-                unitOfWork.Dispose();
             }
-
             txtDorm.Text += "\t" + AppSettings.DormName;
         }
 
@@ -51,7 +44,7 @@ namespace DormApplication.Ui.Actions
         private void txt_GotFocus(object sender, RoutedEventArgs e)
         {
             string name = ((TextBox)sender).Name;
-            foreach (KeyValuePair<String, String> pair in _text)
+            foreach (KeyValuePair<string, string> pair in _text)
             {
                 if (pair.Key.Equals(name) && (((TextBox)sender).Text.Equals(pair.Value)))
                 {
@@ -103,16 +96,15 @@ namespace DormApplication.Ui.Actions
         {
             stackPanel.Visibility = Visibility.Visible;
 
-            if (checkProperties() == 0)
+            //if (checkProperties(out count_mistakes) == 0)
             {
+                checkProperties();
                 string status;
-
                 bool is_male = false;
                 if (checkMale.IsChecked == true)
                 {
                     is_male = true;
                 }
-
                 bool is_student = (checkStudent.IsChecked == true) ? true : false;
                 bool on_budget = (is_student == true) && checkBudget.IsChecked.HasValue ?
                     checkBudget.IsChecked.Value : false;
@@ -130,87 +122,85 @@ namespace DormApplication.Ui.Actions
                         IsBudget = on_budget,
                         Country = comboCountry.SelectedItem.ToString(),
                         Contract = txtContract.Text,
-                        Floor = Int32.Parse(txtFloor.Text),
-                        Room = Int32.Parse(txtRoom.Text),
+                        Floor = int.Parse(txtFloor.Text),
+                        Room = int.Parse(txtRoom.Text),
                         RoomTypeName = comboRoomType.SelectedItem.ToString(),
                         DateStart = dateStart.SelectedDate.Value,
                         DateFinish = dateFinish.SelectedDate.Value
                     };
 
-                    using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                    using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                     {
                         status = unitOfWork.InsertNewPerson(person, AppSettings.Admin, AppSettings.DormId);
                         unitOfWork.Complete();
-                        unitOfWork.Dispose();
                     }
-
                     lblProgress.Content = "Выполнено. " + status;
                 }
                 catch (Exception ex)
                 {
-                    lblProgress.Content = ex.ToString();
+                    lblProgress.Content = "Произошла ошибка...";
+                    Debug.WriteLine(ex.ToString());
                 }
             }
         }
 
-        private int checkProperties()
+        private async void checkProperties()
         {
             string msg = "";
             int count = 0;
             long res;
             int res_int;
 
-            if (String.IsNullOrWhiteSpace(txtSurname.Text))
+            if (string.IsNullOrWhiteSpace(txtSurname.Text))
             {
                 count++;
                 msg += "Незаполнена фамилия \n";
             }
-            if (String.IsNullOrWhiteSpace(txtName.Text))
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 count++;
                 msg += "Незаполнено имя \n";
             }
-            if (String.IsNullOrWhiteSpace(txtPassport.Text))
+            if (string.IsNullOrWhiteSpace(txtPassport.Text))
             {
                 count++;
                 msg += "Не введены паспортные данные \n";
             }
-            if (!(Int64.TryParse(txtPassport.Text, out res)))
+            if (!(long.TryParse(txtPassport.Text, out res)))
             {
                 count++;
                 msg += "Неверно введены паспортные данные \n";
             }
 
-            if (String.IsNullOrWhiteSpace(txtFloor.Text))
+            if (string.IsNullOrWhiteSpace(txtFloor.Text))
             {
                 count++;
                 msg += "Не введен этаж \n";
             }
-            else if (!(Int32.TryParse(txtFloor.Text, out res_int)))
+            else if (!(int.TryParse(txtFloor.Text, out res_int)))
             {
                 count++;
                 msg += "В номере этажа содержаться недопустимые символы \n";
             }
 
-            if (String.IsNullOrWhiteSpace(txtRoom.Text))
+            if (string.IsNullOrWhiteSpace(txtRoom.Text))
             {
                 count++;
                 msg += "Не введен номер комнаты \n";
             }
-            else if (!(Int32.TryParse(txtRoom.Text, out res_int)))
+            else if (!(int.TryParse(txtRoom.Text, out res_int)))
             {
                 count++;
                 msg += "В номере комнаты содержаться недопустимые символы \n";
             }
 
             int max_floor;
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<UnitOfWork>())
             {
                 max_floor = unitOfWork.Dormitories.GetMaximumFloor(AppSettings.DormId);
-                unitOfWork.Dispose();
             }
 
-            if ((Int32.TryParse(txtFloor.Text, out res_int)) && (Int32.Parse(txtFloor.Text) > max_floor))
+            if ((int.TryParse(txtFloor.Text, out res_int)) && (Int32.Parse(txtFloor.Text) > max_floor))
             {
                 count++;
                 msg += "Такого этажа нет в данном корпусе \n";
@@ -218,9 +208,9 @@ namespace DormApplication.Ui.Actions
 
             if (count != 0)
             {
-                MessageBox.Show("Количество, найденных ошибок: " + count + "\n \n" + msg);
+                await this.ShowMessageAsync((count + " ошибок"), msg);
             }
-            return count;
+            //return count;
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
@@ -238,7 +228,7 @@ namespace DormApplication.Ui.Actions
         {
             MainWindow w = new MainWindow();
             w.Show();
-            this.Close();
+            Close();
         }
     }
 }

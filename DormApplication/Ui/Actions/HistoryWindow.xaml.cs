@@ -1,22 +1,14 @@
-﻿using DormApp.Domain;
-using DormApp.Entities;
+﻿using DormApp.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Xceed.Wpf.Toolkit;
-using System.Data;
 using MahApps.Metro.Controls;
+using DormApp.Domain.Interfaces;
+using Ninject;
 
 namespace DormApplication.Ui.Actions
 {
@@ -41,7 +33,7 @@ namespace DormApplication.Ui.Actions
         {
             MainWindow w = new MainWindow();
             w.Show();
-            this.Close();
+            Close();
         }
 
         private void gridHistoryPayment_LoadingRow(object sender, DataGridRowEventArgs e)
@@ -73,32 +65,28 @@ namespace DormApplication.Ui.Actions
                 {
                     e.Row.Background = new SolidColorBrush(colorDebitAccount.SelectedColor.Value);
                 }
-                else e.Row.Background = Brushes.Chocolate;
+                else e.Row.Background = Brushes.White;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
-                gridHistory.ItemsSource = unitOfWork.History.GetHistory(AppSettings.DormId);
-                unitOfWork.Dispose();
+                try
+                {
+                    gridHistory.ItemsSource = unitOfWork.History.GetHistory(AppSettings.DormId).ToList();
+                    unitOfWork.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.ToString());
+                }
             }
         }
 
         private void SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            //string colorPickerName = ((ColorPicker)sender).Name;
-            //Dictionary<string, string> dictColorPickerBindingFlag = new Dictionary<string, string>();
-            //dictColorPickerBindingFlag.Add("colorInserted", "insertedFlag");
-            //dictColorPickerBindingFlag.Add("colorChange", "changeRoomFlag");
-            //dictColorPickerBindingFlag.Add("colorMoveOut", "moveOutFlag");
-            //dictColorPickerBindingFlag.Add("colorAddPayment", "addPaymentFlag");
-            //dictColorPickerBindingFlag.Add("colorAddPrice", "addPriceFlag");
-            //dictColorPickerBindingFlag.Add("colorDebitAccount", "debitAccountFlag");
-            //string flagNeeded;
-            //dictColorPickerBindingFlag.TryGetValue(colorPickerName, out flagNeeded);
-            
             try
             {
                 foreach (DataGridRow Row in GetDataGridRows(gridHistory))
@@ -108,10 +96,10 @@ namespace DormApplication.Ui.Actions
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("\n\nHistoryWindow \n SelectedColorChanged \n" + ex.ToString() + "\n\n");
+                Debug.WriteLine("\nHistoryWindow -> SelectedColorChanged -> exception\n" + ex.ToString());
             }
         }
-        
+
         private IEnumerable<DataGridRow> GetDataGridRows(DataGrid grid)
         {
             var itemsSource = grid.ItemsSource as System.Collections.IEnumerable;

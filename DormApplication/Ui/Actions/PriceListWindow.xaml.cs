@@ -1,20 +1,15 @@
 ﻿using DormApp.Domain;
-using DormApp.Entities;
+using DormApp.Domain.Interfaces;
 using DormApplication.Ui.Dialogs;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Ninject;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DormApplication.Ui.Actions
 {
@@ -31,11 +26,10 @@ namespace DormApplication.Ui.Actions
             lblHeader.Content += AppSettings.DormName;
             dateStart.SelectedDate = DateTime.Today;
 
-            using (var unitOfWork = new UnitOfWork(new Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 gridPriceList.ItemsSource = unitOfWork.GetTariffs(AppSettings.DormId);
                 comboRoomType.ItemsSource = unitOfWork.RoomTypes.GetRoomTypeNames().ToList();
-                unitOfWork.Dispose();
             }
         }
 
@@ -43,7 +37,7 @@ namespace DormApplication.Ui.Actions
         {
             MainWindow w = new MainWindow();
             w.Show();
-            this.Close();
+            Close();
         }
 
         private void gridPriceList_LoadingRow(object sender, DataGridRowEventArgs e)
@@ -53,21 +47,20 @@ namespace DormApplication.Ui.Actions
             {
                 if (checkIsRelevant(item.DateStart, item.DateFinish) == true)
                 {
-                    e.Row.Background = System.Windows.Media.Brushes.LightGreen;
+                    e.Row.Background = Brushes.LightGreen;
                 }
                 else
                 {
-                    e.Row.Background = System.Windows.Media.Brushes.White;
+                    e.Row.Background = Brushes.White;
                 }
             }
         }
 
         private void comboRoomType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 _roomTypeId = unitOfWork.RoomTypes.GetRoomTypeId(((ComboBox)sender).SelectedItem.ToString());
-                unitOfWork.Dispose();
             }
         }
 
@@ -76,12 +69,11 @@ namespace DormApplication.Ui.Actions
             InputNameDialog window = new InputNameDialog("Введите название");
             if (window.ShowDialog().Value == true)
             {
-                using (var unitOfWork = new UnitOfWork(new Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
-                    unitOfWork.RoomTypes.Add(new RoomType { name = window.Answer });
+                    unitOfWork.RoomTypes.Add(new DormApp.Entities.RoomType { name = window.Answer });
                     comboRoomType.ItemsSource = unitOfWork.RoomTypes.GetRoomTypeNames();
                     unitOfWork.Complete();
-                    unitOfWork.Dispose();
                 }
             }
         }
@@ -98,25 +90,31 @@ namespace DormApplication.Ui.Actions
             }
         }
 
-        private void btnAddTariff_Click(object sender, RoutedEventArgs e)
+        private async void btnAddTariff_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Tariff tariff = (Tariff)this.TryFindResource("tariff");
+                Tariff tariff = (Tariff)TryFindResource("tariff");
                 tariff.IsStudent = (checkStudent.IsChecked == true) ? true : false;
                 tariff.OnBudget = (tariff.IsStudent == true) && checkBudget.IsChecked.HasValue ?
                     checkBudget.IsChecked.Value : false;
                 string errMessage;
-                using (var unitOfWork = new UnitOfWork(new Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     errMessage = unitOfWork.AddTariff(tariff, AppSettings.DormId, AppSettings.Admin);
                     unitOfWork.Complete();
                     gridPriceList.ItemsSource = unitOfWork.GetTariffs(AppSettings.DormId);
-                    unitOfWork.Dispose();
                 }
-                if (!errMessage.Equals(string.Empty)) { MessageBox.Show(errMessage); }
+                if (!errMessage.Equals(string.Empty))
+                {
+                    await this.ShowMessageAsync("", errMessage);
+                }
             }
-            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+            catch (Exception ex)
+            {
+                await this.ShowMessageAsync("...ы", "Что-то пошло не так...");
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         private bool checkIsRelevant(DateTime DateStart, DateTime? DateFinish)

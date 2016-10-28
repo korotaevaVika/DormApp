@@ -1,18 +1,7 @@
-﻿using DormApp.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using MahApps.Metro.Controls;
+using DormApp.Domain.Interfaces;
+using Ninject;
 
 namespace DormApplication.Ui.Actions
 {
@@ -25,7 +14,7 @@ namespace DormApplication.Ui.Actions
 
         public AddDormWindow(EntranceWindow caller)
         {
-            this._caller = caller;
+            _caller = caller;
             InitializeComponent();
         }
 
@@ -33,29 +22,26 @@ namespace DormApplication.Ui.Actions
         {
             try
             {
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     unitOfWork.Dormitories.Add(new DormApp.Entities.DormType
                     {
                         name = txtDormName.Text,
                         address = txtDormAddress.Text,
-                        floor_number = Int32.Parse(txtDormFloorNum.Text)
+                        floor_number = int.Parse(txtDormFloorNum.Text)
                     });
                     unitOfWork.Complete();
-                    unitOfWork.Dispose();
                 }
-
-                this.Close();
+                Close();
                 _caller.Show();
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     _caller.comboDorm.ItemsSource = unitOfWork.Dormitories.GetDormNames();
-                    unitOfWork.Dispose();
                 }
             }
             catch
             {
-                this.Close();
+                Close();
                 _caller.Show();
             }
         }

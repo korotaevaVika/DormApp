@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DormApplication
 {
@@ -7,19 +6,19 @@ namespace DormApplication
     {
         private string _btnName;
         private string _category;
-        private List<String> _lst;
+        private List<string> _lst;
 
         public string BtnName { get { return _btnName; } }
         public string Category { get { return _category; } }
-        public List<String> Lst { get { return _lst; } }
+        public List<string> Lst { get { return _lst; } }
 
-        public InfoClass(String BtnName, String Category, List<String> Lst)
+        public InfoClass(string BtnName, string Category, List<string> Lst)
         {
-            this._btnName = BtnName;
-            this._category = Category;
-            this._lst = Lst;
+            _btnName = BtnName;
+            _category = Category;
+            _lst = Lst;
         }
-        
+
         public static InfoClass[] Default()
         {
             InfoClass[] info = new InfoClass[5];
@@ -47,7 +46,7 @@ namespace DormApplication
             List<string> Lst_2 = new List<string>();
             BtnName = "btnPay";
             Category = "Оплата проживания";
-            Lst_2.Add("Ввод данных о проведенном платеже"); 
+            Lst_2.Add("Ввод данных о проведенном платеже");
             info[2] = new InfoClass(BtnName, Category, Lst_2);
 
             //Для кнопки btnReport - Отчеты
@@ -57,7 +56,7 @@ namespace DormApplication
             Lst_3.Add("Просмотр загруженности комнат");
             Lst_3.Add("Печать задолженности проживающих");
             info[3] = new InfoClass(BtnName, Category, Lst_3);
-            
+
             //Для кнопки btnQuit - Выселение
             List<string> Lst_4 = new List<string>();
             BtnName = "btnQuit";
@@ -68,6 +67,5 @@ namespace DormApplication
 
             return info;
         }
-        
     }
 }

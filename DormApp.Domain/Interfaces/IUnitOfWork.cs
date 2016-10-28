@@ -57,6 +57,8 @@ namespace DormApp.Domain.Interfaces
         string AddTariff(Tariff tariff, int dormId, string adminName);
         IEnumerable<Tariff> GetTariffs(int dormId);
         IEnumerable<Tariff> GetAllTariffs();
+        AccountData GetSuitableTariff(int person_id, int dormId);
+        bool DebitAccount(int dormId, int floor, string Admin);
 
         string GetRoomGender(int dormId, int roomNumber, int roomTypeId);
     }

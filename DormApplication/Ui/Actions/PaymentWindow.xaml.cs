@@ -1,19 +1,14 @@
 ﻿using DormApp.Domain;
+using DormApp.Domain.Interfaces;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DormApplication.Ui.Actions
 {
@@ -32,11 +27,10 @@ namespace DormApplication.Ui.Actions
             lblHeader.Content += AppSettings.DormName;
             dateOfPayment.SelectedDate = DateTime.Today;
             _roomTypeId = _floor = _roomNum = _floorForDebit = 0;
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 comboFloors.ItemsSource = comboFloorsForDebit.ItemsSource = unitOfWork.Dormitories.GetLivingFloors(AppSettings.DormId);
                 comboRoomType.ItemsSource = unitOfWork.RoomTypes.GetRoomTypeNames().ToList();
-                unitOfWork.Dispose();
             }
         }
 
@@ -44,16 +38,16 @@ namespace DormApplication.Ui.Actions
         {
             MainWindow w = new MainWindow();
             w.Show();
-            this.Close();
+            Close();
         }
 
         private void comboRoomType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try {
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            try
+            {
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     _roomTypeId = unitOfWork.RoomTypes.GetRoomTypeId((comboRoomType.SelectedItem.ToString()));
-                    unitOfWork.Dispose();
                 }
                 UpdatePeopleCombobox();
             }
@@ -66,13 +60,12 @@ namespace DormApplication.Ui.Actions
             {
                 comboRooms.ItemsSource = new List<string>();
                 _floor = (int)((ComboBox)sender).SelectedItem;
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     comboRooms.ItemsSource = unitOfWork.GetLivingRooms(_floor, AppSettings.DormId).ToList();
-                    unitOfWork.Dispose();
                 }
             }
-            catch(Exception ex) { Debug.WriteLine(ex.ToString()); }
+            catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
         }
 
         private void comboRooms_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -82,25 +75,24 @@ namespace DormApplication.Ui.Actions
                 int.TryParse(comboRooms.SelectedItem.ToString(), out _roomNum);
                 UpdatePeopleCombobox();
             }
-            catch (Exception) { }
+            catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
         }
 
-        private void btnPay_Click(object sender, RoutedEventArgs e)
+        private async void btnPay_Click(object sender, RoutedEventArgs e)
         {
             decimal sum;
-            if ((_personId == 0) || !(Decimal.TryParse(txtSumOfPayment.Text, out sum)))
+            if ((_personId == 0) || !(decimal.TryParse(txtSumOfPayment.Text, out sum)))
             {
-                MessageBox.Show("Ошибка ввода данных");
+                await this.ShowMessageAsync("...", "Ошибка ввода данных");
             }
             else
             {
                 using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
                 {
-                    MessageBox.Show(unitOfWork.AddPayment(_personId, sum, dateOfPayment.SelectedDate.Value.Date, 
+                    await this.ShowMessageAsync("", unitOfWork.AddPayment(_personId, sum, dateOfPayment.SelectedDate.Value.Date,
                         AppSettings.Admin, AppSettings.DormId));
                     ClearFields();
                     unitOfWork.Complete();
-                    unitOfWork.Dispose();
                 }
             }
         }
@@ -116,7 +108,7 @@ namespace DormApplication.Ui.Actions
             try
             {
                 string[] fio = comboPeople.SelectedItem.ToString().Split(' ');
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     _personId = unitOfWork.GetPersonId(new PersonData
                     {
@@ -129,18 +121,16 @@ namespace DormApplication.Ui.Actions
                     });
                     accountData = unitOfWork.GetSuitableTariff(_personId, AppSettings.DormId);
                     FillFields(accountData);
-                    unitOfWork.Dispose();
-                }  
+                }
             }
-            catch{}
+            catch { }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 gridHistoryPayment.ItemsSource = unitOfWork.History.GetDebitAccountHistory(AppSettings.DormId).ToList();
-                unitOfWork.Dispose();
             }
         }
 
@@ -154,11 +144,11 @@ namespace DormApplication.Ui.Actions
             catch { }
         }
 
-        private void btnDebitAccount_Click(object sender, RoutedEventArgs e)
+        private async void btnDebitAccount_Click(object sender, RoutedEventArgs e)
         {
             if (_floorForDebit != 0)
             {
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     if (unitOfWork.DebitAccount(AppSettings.DormId, _floorForDebit, AppSettings.Admin))
                     {
@@ -166,10 +156,10 @@ namespace DormApplication.Ui.Actions
                         gridHistoryPayment.ItemsSource = unitOfWork.History.GetDebitAccountHistory(AppSettings.DormId).ToList();
                         MessageBox.Show("Ok");
                     }
-                    else {
-                        MessageBox.Show("Something went wrong...");
+                    else
+                    {
+                        await this.ShowMessageAsync("...", "Что-то пошло не так...");
                     }
-                    unitOfWork.Dispose();
                 }
                 _floorForDebit = 0;
                 comboFloorsForDebit.SelectedIndex = -1;
@@ -179,23 +169,21 @@ namespace DormApplication.Ui.Actions
 
         private void UpdatePeopleCombobox()
         {
-            bool floorAndRoomIsEmpty = ((_floor == 0) || (_roomNum == 0)) ? true: false;
+            bool floorAndRoomIsEmpty = ((_floor == 0) || (_roomNum == 0)) ? true : false;
             bool CorrectFloorRoom = (_roomNum.ToString().IndexOfAny(_floor.ToString().ToArray<char>()) == 0) ? true : false;
-            
-            if ( !floorAndRoomIsEmpty && CorrectFloorRoom && (_roomTypeId != 0))
+
+            if (!floorAndRoomIsEmpty && CorrectFloorRoom && (_roomTypeId != 0))
             {
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     comboPeople.ItemsSource = unitOfWork.GetPeopleNamesLivingInRoom(AppSettings.DormId, _roomNum, _roomTypeId).ToList();
-                    unitOfWork.Dispose();
                 }
             }
             else if (!floorAndRoomIsEmpty && CorrectFloorRoom && (_roomTypeId == 0))
             {
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     comboPeople.ItemsSource = unitOfWork.GetPeopleNamesLivingInRoom(AppSettings.DormId, _roomNum).ToList();
-                    unitOfWork.Dispose();
                 }
             }
         }

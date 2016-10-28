@@ -1,21 +1,10 @@
-﻿using CrystalDecisions.CrystalReports.Engine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using DormApplication.Ui.Actions;
-using DormApp.Domain;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using DormApp.Domain.Interfaces;
+using Ninject;
+using System.Diagnostics;
 
 namespace DormApplication.Ui.Reports
 {
@@ -30,10 +19,9 @@ namespace DormApplication.Ui.Reports
 
             lblDormName.Content = AppSettings.DormName;
 
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 comboFloor.ItemsSource = unitOfWork.Dormitories.GetLivingFloors(AppSettings.DormId);
-                unitOfWork.Dispose();
             }
         }
 
@@ -49,7 +37,7 @@ namespace DormApplication.Ui.Reports
                 case MessageBoxResult.No:
                     GenerateReportWindow grw = new GenerateReportWindow();
                     grw.Show();
-                    this.Close();
+                    Close();
                     break;
             }
             try
@@ -57,7 +45,10 @@ namespace DormApplication.Ui.Reports
                 ReportsWindow w = new ReportsWindow((int)comboFloor.SelectedItem);
                 w.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         private async void btnBack_Click(object sender, RoutedEventArgs e)
@@ -66,9 +57,13 @@ namespace DormApplication.Ui.Reports
             {
                 GenerateReportWindow generateWindow = new GenerateReportWindow();
                 generateWindow.Show();
-                this.Close();
+                Close();
             }
-            catch (Exception ex) { await this.ShowMessageAsync("Ошибка", ex.ToString()); }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                await this.ShowMessageAsync("Ошибка", "Что-то произошло...");
+            }
         }
     }
 }

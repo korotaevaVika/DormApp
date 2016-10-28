@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using DormApp.Domain;
 using MahApps.Metro.Controls;
+using System.Diagnostics;
+using DormApp.Domain.Interfaces;
+using Ninject;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace DormApplication.Ui.Actions
 {
@@ -40,7 +36,7 @@ namespace DormApplication.Ui.Actions
         {
             MainWindow w = new MainWindow();
             w.Show();
-            this.Close();
+            Close();
         }
 
         private void txtFloor_TextChanged(object sender, TextChangedEventArgs e)
@@ -56,14 +52,12 @@ namespace DormApplication.Ui.Actions
                 using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
                 {
                     _lstRooms = unitOfWork.GetLivingRooms(floor, AppSettings.DormId).ToList();
-                    unitOfWork.Dispose();
                 }
-                //_lstRooms = Data.GetLivingRooms(floor).ToList<int>();
                 ((ComboBox)FindName(comboboxName)).ItemsSource = _lstRooms;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //MessageBox.Show("txtFloor_TextChanged " + ex.ToString());
+                Debug.WriteLine(ex.ToString());
             }
         }
 
@@ -72,20 +66,18 @@ namespace DormApplication.Ui.Actions
             string name = ((ComboBox)sender).Name.ToString();
             string tab = name.Substring(name.IndexOf('_'));
             string comboboxPeopleName = "comboPeople" + tab;
-
             try
             {
                 _room = int.Parse(((ComboBox)FindName(name)).SelectedItem.ToString());
                 using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
                 {
                     _lstPeople = unitOfWork.GetPeopleNamesLivingInRoom(AppSettings.DormId, _room).ToList();
-                    //Data.GetPeopleLivingInRoom(_room).ToList<string>();
-                    unitOfWork.Dispose();
                 }
                 ((ComboBox)FindName(comboboxPeopleName)).ItemsSource = _lstPeople;
             }
-            catch (Exception)
-            {// MessageBox.Show("comboRoom_SelectionChanged" + ex.ToString()); 
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
             }
         }
 
@@ -93,8 +85,8 @@ namespace DormApplication.Ui.Actions
         {
             string[] fio;
             long? passport = new long();
-            string contract = String.Empty;
-            string room_type = String.Empty;
+            string contract = string.Empty;
+            string room_type = string.Empty;
             decimal sum = new decimal();
 
             try
@@ -102,7 +94,6 @@ namespace DormApplication.Ui.Actions
                 fio = ((ComboBox)sender).SelectedItem.ToString().Split(' ');
                 _surname = fio[0];
                 _name = fio[1];
-
                 _person = new PersonData
                 {
                     Name = _name,
@@ -110,14 +101,10 @@ namespace DormApplication.Ui.Actions
                     Room = _room,
                     DormID = AppSettings.DormId
                 };
-
-
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     unitOfWork.GetInformation(_person, out passport, out contract, out room_type, out sum);
-                    unitOfWork.Dispose();
                 }
-
                 txtContract.Text = contract;
                 txtDebt.Text = sum.ToString() + "p.";
                 txtRoom.Text = _room.ToString();
@@ -126,9 +113,9 @@ namespace DormApplication.Ui.Actions
                 txtRoomType.Text = room_type;
                 txtPassport.Text = passport.ToString();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //MessageBox.Show(ex.ToString()); 
+                Debug.WriteLine(ex.ToString());
             }
         }
 
@@ -136,7 +123,7 @@ namespace DormApplication.Ui.Actions
         {
             try
             {
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     unitOfWork.MovePersonOut(
                         _person,
@@ -144,21 +131,24 @@ namespace DormApplication.Ui.Actions
                         AppSettings.DormId
                         );
                     unitOfWork.Complete();
-                    unitOfWork.Dispose();
                 }
                 lblProgress.Content = _surname + " " + _name + " " + "выселен(а)";
             }
-            catch { lblProgress.Content = "Ошибка при совершении операции"; }
+            catch (Exception ex)
+            {
+                lblProgress.Content = "Ошибка при совершении операции";
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
-        private void btnChange_Click(object sender, RoutedEventArgs e)
+        private async void btnChange_Click(object sender, RoutedEventArgs e)
         {
             int new_floor, new_room, new_room_id;
             try
             {
-                new_floor = Int32.Parse(txtNewFloor.Text);
-                new_room = Int32.Parse(txtNewRoom.Text);
-                using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                new_floor = int.Parse(txtNewFloor.Text);
+                new_room = int.Parse(txtNewRoom.Text);
+                using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                 {
                     new_room_id = unitOfWork.RoomTypes.GetRoomTypeId(
                         comboNewRoomType.SelectedItem.ToString()
@@ -176,20 +166,20 @@ namespace DormApplication.Ui.Actions
                         AppSettings.DormId
                         );
                     unitOfWork.Complete();
-                    unitOfWork.Dispose();
                 }
-                MessageBox.Show(_surname + " " + _name + " " + "переехал(-а) из " + _room + " в " + new_room);
+                await this.ShowMessageAsync("OK", _surname + " " + _name + " " + "переехал(-а) из " + _room + " в " + new_room);
             }
             catch (Exception ex)
-            { MessageBox.Show(ex.ToString()); }
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 comboNewRoomType.ItemsSource = unitOfWork.RoomTypes.GetRoomTypeNames();
-                unitOfWork.Dispose();
             }
         }
     }

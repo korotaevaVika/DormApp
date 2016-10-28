@@ -1,19 +1,12 @@
 ﻿using DormApp.Domain;
+using DormApp.Domain.Interfaces;
 using DormApplication.Ui.Actions;
 using MahApps.Metro.Controls;
-using System;
+using Ninject;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DormApplication.Ui.Reports
 {
@@ -32,10 +25,9 @@ namespace DormApplication.Ui.Reports
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+            using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
             {
                 comboFloors.ItemsSource = unitOfWork.Dormitories.GetLivingFloors(AppSettings.DormId).ToList();
-                unitOfWork.Dispose();
             }
             comboFloors.SelectedIndex = -1;
         }
@@ -49,7 +41,7 @@ namespace DormApplication.Ui.Reports
         {
             MainWindow w = new MainWindow();
             w.Show();
-            this.Close();
+            Close();
         }
 
         private void comboFloors_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -64,28 +56,26 @@ namespace DormApplication.Ui.Reports
             {
                 try
                 {
-                    using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                    using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                     {
                         _data = unitOfWork.GetPopulation(AppSettings.DormId).ToList();
                         gridPopulation.ItemsSource = _data;
-                        unitOfWork.Dispose();
                     }
                 }
-                catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+                catch { }
             }
             else if (comboFloors.SelectedIndex != -1)
             {
                 _floor = (int)comboFloors.SelectedItem;
                 try
                 {
-                    using (var unitOfWork = new UnitOfWork(new DormApp.Entities.Dormitory_Entities()))
+                    using (IUnitOfWork unitOfWork = App.kernel.Get<IUnitOfWork>())
                     {
                         _data = unitOfWork.GetPopulation(AppSettings.DormId, _floor).ToList();
                         gridPopulation.ItemsSource = _data;
-                        unitOfWork.Dispose();
                     }
                 }
-                catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+                catch { }
             }
         }
     }

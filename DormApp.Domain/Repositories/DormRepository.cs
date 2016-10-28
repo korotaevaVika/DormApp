@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DormApp.Entities;
 using DormApp.Domain.Interfaces;
 
@@ -33,40 +30,5 @@ namespace DormApp.Domain
         {
             return GetAll().Where(dorm => dorm.id_building == dormId).Select(dorm => dorm.floor_number).Last();
         }
-
-        //public IEnumerable<Population> GetPopulation(int dormId)
-        //{
-        //    IEnumerable<int> _floors = GetLivingFloors(dormId);
-        //    List<Population> _population = new List<Population>();
-        //    RoomRepository roomRepository = new RoomRepository(_context);
-        //    foreach (var floor in _floors)
-        //    {
-        //        _population.AddRange(_context.GetPopulation(dormId, floor).Select(res =>
-        //            new Population
-        //            {
-        //                RoomType = res.roomName,
-        //                Quantity = (int)res.Quantity,
-        //                RoomNumber = res.roomNum,
-        //                Gender = roomRepository.GetRoomGender(
-        //                         dormId,
-        //                         res.roomNum,
-        //                         roomRepository.GetRoomTypeId(res.roomName))
-        //            }).ToList());
-        //    }
-        //    return _population;
-
-        //    //(from res in _context.GetPopulation(dormId, floor)
-        //    // select new Population
-        //    // {
-        //    //     RoomType = res.roomName,
-        //    //     Quantity = (int)res.Quantity,
-        //    //     RoomNumber = res.roomNum,
-        //    //     Gender = roomRepository.GetRoomGender(
-        //    //         dormId,
-        //    //         res.roomNum,
-        //    //         roomRepository.GetRoomTypeId(res.roomName)
-        //    //         )
-        //    // }).ToList());
-        //}
     }
 }

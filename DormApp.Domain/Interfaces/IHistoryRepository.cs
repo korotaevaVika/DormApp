@@ -11,6 +11,5 @@ namespace DormApp.Domain.Interfaces
     {
         IEnumerable<DebitHistory> GetDebitAccountHistory(int dormId);
         IEnumerable<History> GetHistory(int dormId);
-        //string GetActiveFlag(History historyItem);
     }
 }

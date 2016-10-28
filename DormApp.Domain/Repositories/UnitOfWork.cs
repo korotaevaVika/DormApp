@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DormApp.Domain.Interfaces;
 using DormApp.Entities;
 using System.Diagnostics;
@@ -38,7 +36,7 @@ namespace DormApp.Domain
                 History = new HistoryRepository(_context);
                 Agreements = new AgreementRepository(_context);
                 Prices = new PriceRepository(_context);
-                Payments = new PaymentRepository(_context);
+                Payments = new Repository<Payment>(_context);
                 Mails = new MailRepository(_context);
             }
         }
@@ -50,7 +48,9 @@ namespace DormApp.Domain
 
         public void Dispose()
         {
-            _context.Dispose();
+            Complete();
+            //_context.Dispose();
+            //Debug.WriteLine("Dispose of UNIT OF WORK AND DBCONTEXT");
         }
 
         public string AddTariff(Tariff tariff, int dormId, string adminName)
@@ -163,7 +163,7 @@ namespace DormApp.Domain
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("------------- \nUnitOfWork \n DebitAccount \n" + ex.ToString() + "\n\n");
+                Debug.WriteLine(ex.ToString());
                 return false;
             }
         }
@@ -356,16 +356,6 @@ namespace DormApp.Domain
                     (x.Key.is_living == true) &&
                     (x.Value.room_number == person.Room) &&
                     (x.Value.dorm_id == person.DormID)).Select(res => res.Key.id_person).ToList().SingleOrDefault();
-
-                //(from p in _context.Person
-                // join a in _context.Agreement
-                // on p.id_person equals a.person_id
-                // where ((p.surname == person.SurName) && (p.name == person.Name) && (p.is_living == true) &&
-                // (a.room_number == person.Room) && (a.dorm_id == person.DormID))
-                // //&&
-                // //(!(person.RoomType.Equals(null)) && (person.RoomType == a.room_id)
-                // //|| (person.RoomType.Equals(null)))
-                // select p.id_person).ToList().Last();
             }
             catch { return 0; }
         }
@@ -381,14 +371,8 @@ namespace DormApp.Domain
                     (r, a) => new KeyValuePair<RoomType, Agreement>(r, a))
                     .Where(res => res.Value.person_id == person_id)
                     .Select(res => res.Key.name).ToList().Last();
-
-                //return (from r in _context.RoomType
-                //        join a in _context.Agreement
-                //        on r.id_type equals a.room_id
-                //        where (a.person_id == person_id)
-                //        select r.name).ToList().Last<string>();
             }
-            catch { return "Комнатка"; }
+            catch { return "..."; }
         }
         public void GetInformation(
             PersonData person,
@@ -494,8 +478,9 @@ namespace DormApp.Domain
                 }
                 else return false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 return false;
             }
         }
@@ -516,14 +501,8 @@ namespace DormApp.Domain
                                 (x.Value.room_id == roomTypeId) &&
                                 (x.Value.room_number == registrationData.RoomNumber) &&
                                 (x.Value.dorm_id == dormId)).Select(res => res.Key.id_person).ToList().Count();
-            if (count == 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (count == 1) return true; else return false;
+
         }
 
         public PersonData ConvertRegistrationDataToPersonData(RegistrationData registrationData)
@@ -591,9 +570,9 @@ namespace DormApp.Domain
                     Floor = Agreements.GetAll().Where(x => x.person_id == personId).Select(x => x.floor_number).LastOrDefault()
                 };
             }
-            catch
+            catch (Exception ex)
             {
-                Debug.WriteLine("=========== Exception Caught ==== GetPersonDataById");
+                Debug.WriteLine(ex.ToString());
                 return new PersonData { };
             }
         }
@@ -616,7 +595,4 @@ namespace DormApp.Domain
                 .ToList();
         }
     }
-
-
-
 }

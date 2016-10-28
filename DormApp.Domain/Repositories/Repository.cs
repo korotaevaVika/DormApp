@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DormApp.Entities;
 using System.Linq.Expressions;
 using DormApp.Domain.Interfaces;
@@ -15,7 +13,7 @@ namespace DormApp.Domain
 
         public Repository(Dormitory_Entities context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public void Add(TEntity entity)
